@@ -7,6 +7,7 @@ import helmet from "helmet";
 const app = express();
 import { createServer } from "http";
 import mongoose from "mongoose";
+import userRouter from "./routes/user.js";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
@@ -33,6 +34,8 @@ socketio.on("connection", (socket) => {
 server.listen(process.env.port || 5000, () => {
    console.log(`Server listen ${process.env.port || 5000}`);
 });
+
+app.use("/user", userRouter);
 
 (async () => {
    try {
