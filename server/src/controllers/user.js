@@ -19,7 +19,6 @@ export const login = async (req, res) => {
    if (error) {
       return res.send({ message: error.details[0].message });
    }
-
    const { username, password } = req.body;
 
    try {
@@ -29,7 +28,6 @@ export const login = async (req, res) => {
          return res.status(404).send({ message: "User not found" });
       } else {
          if (findUser.password === password) {
-            console.log(Date.now());
             const updatedUser = await User.findOneAndUpdate(
                { _id: findUser._id },
                {
@@ -66,15 +64,39 @@ export const register = async (req, res) => {
 
       const find = users.find((user) => user.username === username);
       if (find === undefined) {
-         User.create({
+         const user = await User.create({
             username,
             password,
          });
-         return res.send(users);
+
+         await User.findByIdAndUpdate(user._id, {
+            token: createToken({
+               username: user.username,
+               id: user._id,
+               date: Date.now(),
+            }),
+         }).select("-__v -password");
+         return res.send(await User.findById(user._id).select("-__v -password"));
       } else {
          return res.status(409).send({ message: "User already exists" });
       }
    } catch (error) {
       return res.status(500).send({ message: "Server error (Register)" });
+   }
+};
+
+export const Control = async (req, res) => {
+   const { userid, token } = req.body;
+
+   try {
+      const user = await User.findById(userid).select("-__v -password");
+
+      if (user.token === token) {
+         return res.send(user);
+      } else {
+         return res.status(400).send({ message: "invalid token or userid" });
+      }
+   } catch (error) {
+      return res.status(500).send({ message: "Server error (login)" });
    }
 };

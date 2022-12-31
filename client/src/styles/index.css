@@ -15,3 +15,14 @@ body,
    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
+
+#root {
+   @apply h-full flex flex-col justify-center items-center bg-slate-900;
+}
+
+.input-placeholder::placeholder {
+   @apply text-sm;
+}
+.input-placeholder.error {
+   @apply bg-red-100 border-red-300;
+}
