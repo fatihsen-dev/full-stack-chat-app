@@ -39,6 +39,11 @@ export const counterSlice = createSlice({
       },
       logout: (state) => {
          state.userStatus = false;
+         user: {
+            token: "";
+            username: "";
+            _id: "";
+         }
          localStorage.removeItem("token");
       },
    },

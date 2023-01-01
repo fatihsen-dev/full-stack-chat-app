@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginRequest } from "../axios";
 import { useDispatch } from "react-redux";
@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 
 export default function Login() {
    const dispatch = useDispatch();
+   const navigate = useNavigate();
 
    const [username, setUsername] = useState<string>("");
    const [password, setPassword] = useState<string>("");
@@ -74,6 +75,7 @@ export default function Login() {
             JSON.stringify({ token: data.token, userid: data._id })
          );
          dispatch(login({ status: true, user: data }));
+         navigate("/");
       } catch (error: any) {
          toast.error(error.response.data.message);
       }
