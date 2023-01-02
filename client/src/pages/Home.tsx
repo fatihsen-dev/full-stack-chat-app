@@ -19,7 +19,7 @@ export default function Home() {
       socket.emit("send_message", { message: message });
    };
    return (
-      <div className='flex w-full h-full max-h-[800px] container'>
+      <div className='flex w-full h-full max-h-[700px] container'>
          <Sidebar />
          <MessageArea />
       </div>
