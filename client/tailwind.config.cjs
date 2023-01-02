@@ -14,6 +14,15 @@ module.exports = {
             NavyBlue: "#405059",
          },
       },
+      container: {
+         padding: {
+            DEFAULT: "0rem",
+            sm: "0rem",
+            lg: "0rem",
+            xl: "0rem",
+            "2xl": "10rem",
+         },
+      },
    },
    plugins: [],
 };
