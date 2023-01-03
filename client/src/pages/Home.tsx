@@ -2,26 +2,25 @@ import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import Sidebar from "../components/Sidebar";
 import MessageArea from "../components/MessageArea";
-const socket = io(import.meta.env.VITE_SERVER_URL);
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+const socket = io(import.meta.env.VITE_SERVER_URL, {
+   transports: ["websocket", "polling", "flashsocket"],
+});
 
 export default function Home() {
-   // useState
-   const [message, setMessage] = useState();
+   const { user, userStatus } = useSelector((state: RootState) => state.user);
 
    useEffect(() => {
-      socket.on("receive_message", (data) => {
-         console.log(data);
+      socket.on("receive_message", (message) => {
+         console.log(message);
       });
    }, [socket]);
 
-   const submitHandle = (e: any) => {
-      e.preventDefault();
-      socket.emit("send_message", { message: message });
-   };
    return (
-      <div className='flex w-full h-full max-h-[700px] container'>
+      <div className='flex w-full h-full 2xl:container xl:container 2xl:my-5 xl:my-5'>
          <Sidebar />
-         <MessageArea />
+         <MessageArea socket={socket} user={user} />
       </div>
    );
 }

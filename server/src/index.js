@@ -13,17 +13,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(express.static("src/public"));
 app.use(bodyParser.json());
-app.use(cors());
 dotenv.config();
+app.use(cors());
 
 const server = createServer(app);
 const socketio = new Server(server);
 
 socketio.on("connection", (socket) => {
-   // console.log(`User connected: ${socket.id}`);
+   console.log(`User connected: ${socket.id}`);
 
    socket.on("send_message", (message) => {
       socket.broadcast.emit("receive_message", message);
+      console.log(message);
    });
 
    socket.on("disconnect", (socket) => {
