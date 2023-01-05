@@ -8,6 +8,11 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { controlRequest } from "./axios";
+import { io } from "socket.io-client";
+
+const socket = io(import.meta.env.VITE_SERVER_URL, {
+   transports: ["websocket", "polling", "flashsocket"],
+});
 
 function App() {
    const { userStatus } = useSelector((state: RootState) => state.user);
@@ -37,7 +42,7 @@ function App() {
    }, []);
 
    if (userStatus === true) {
-      return <Home />;
+      return <Home socket={socket} />;
    } else if (userStatus === false) {
       return (
          <Routes>
