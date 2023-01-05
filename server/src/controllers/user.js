@@ -14,6 +14,15 @@ export const index = async (req, res) => {
    }
 };
 
+export const search = async (req, res) => {
+   User.find({ username: new RegExp(req.params.username, "gi") }, function (err, users) {
+      if (err) {
+         return res.status(500).send({ message: "Server error (search)" });
+      }
+      return res.send(users);
+   }).select("-token -password -__v");
+};
+
 export const login = async (req, res) => {
    const { error } = userValidate(req.body);
    if (error) {

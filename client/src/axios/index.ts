@@ -11,3 +11,6 @@ export const registerRequest = async (data: { username: string; password: string
 
 export const controlRequest = async (data: { username: string; token: string }) =>
    await HTTP.post("/user/control", data);
+
+export const searchRequest = async (username: string) =>
+   await HTTP.get(`/user/search/${username}`);
