@@ -22,9 +22,9 @@ const socketio = new Server(server);
 socketio.on("connection", (socket) => {
    console.log(`User connected: ${socket.id}`);
 
-   socket.on("send_message", (message) => {
-      socket.broadcast.emit("receive_message", message);
-      console.log(message);
+   socket.on("send_message", (data) => {
+      const { username, message } = data;
+      socket.broadcast.emit("receive_message", { username, message });
    });
 
    socket.on("disconnect", (socket) => {

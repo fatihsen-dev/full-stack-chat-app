@@ -11,7 +11,11 @@ export default function MessageArea({
 
    const submitHandle = (e: any) => {
       e.preventDefault();
-      socket.emit("send_message", { message, username: user.username });
+      socket.emit("send_message", {
+         message,
+         username: user.username,
+         userid: user._id,
+      });
    };
    return (
       <div className='flex-1 bg-dark grid place-items-center'>
