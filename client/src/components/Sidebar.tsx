@@ -14,6 +14,7 @@ export default function Sidebar() {
    const [inputVal, setInputVal] = useState("");
    const [popupActive, setPopupActive] = useState<boolean>(false);
    const [newUser, setNewUser] = useState<boolean>(false);
+   const [firstUser, setFirstUser] = useState<{ username: string; _id: string }>();
    const [newUsers, setNewUsers] = useState<
       Array<{
          _id: string;
@@ -33,6 +34,7 @@ export default function Sidebar() {
 
    const activeUserHandle = (username: string, _id: string) => {
       dispatch(setActiveUser({ username, _id }));
+      setFirstUser({ username, _id });
       setPopupActive(false);
       setInputVal("");
    };
@@ -61,7 +63,21 @@ export default function Sidebar() {
             </button>
          </div>
          <div className='w-full h-full relative'>
-            <ul></ul>
+            <ul className='p-2 gap-2 flex flex-col w-full h-full bg-lightv1'>
+               {firstUser && (
+                  <li className='flex cursor-pointer p-2 items-center gap-2 bg-lightv2 rounded-sm'>
+                     <Avatar name={firstUser.username} size={30} />
+                     <div className='flex flex-col justify-center translate-y-1'>
+                        <span className='text-lg leading-3 font-medium'>
+                           {firstUser.username}
+                        </span>
+                        <span className='text-sm text-dark/50'>
+                           Lorem ipsum dolor sit amet...
+                        </span>
+                     </div>
+                  </li>
+               )}
+            </ul>
             <ul
                style={popupActive ? { left: 0 } : {}}
                className='absolute p-2 gap-2 flex flex-col transition-all -left-full top-0 w-full h-full bg-lightv1'>
