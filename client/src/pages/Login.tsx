@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginRequest } from "../axios";
 import { useDispatch } from "react-redux";
-import { login } from "../store/user";
+import { login } from "../store/auth";
 import { toast } from "react-hot-toast";
 
 export default function Login() {

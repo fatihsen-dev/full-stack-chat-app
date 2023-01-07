@@ -2,8 +2,15 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useState } from "react";
 import { searchRequest } from "../axios";
 import Avatar from "./Avatar";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store";
+import { setUsers, setActiveUser } from "../store/messageData";
 
 export default function Sidebar() {
+   const {} = useSelector((state: RootState) => state.messages);
+   const { user } = useSelector((state: RootState) => state.auth);
+   const dispatch = useDispatch();
+
    const [inputVal, setInputVal] = useState("");
    const [popupActive, setPopupActive] = useState<boolean>(false);
    const [newUser, setNewUser] = useState<boolean>(false);
@@ -22,6 +29,12 @@ export default function Sidebar() {
       } else if (e.target.value.length === 0) {
          setNewUsers([]);
       }
+   };
+
+   const activeUserHandle = (username: string, _id: string) => {
+      dispatch(setActiveUser({ username, _id }));
+      setPopupActive(false);
+      setInputVal("");
    };
 
    return (
@@ -53,21 +66,25 @@ export default function Sidebar() {
                style={popupActive ? { left: 0 } : {}}
                className='absolute p-2 gap-2 flex flex-col transition-all -left-full top-0 w-full h-full bg-lightv1'>
                {newUsers &&
-                  newUsers.map((user, index) => (
-                     <li
-                        className='flex cursor-pointer p-2 items-center gap-2 bg-lightv2 rounded-sm'
-                        key={index}>
-                        <Avatar name={user.username} size={30} />
-                        <div className='flex flex-col justify-center translate-y-1'>
-                           <span className='text-lg leading-3 font-medium'>
-                              {user.username}
-                           </span>
-                           <span className='text-sm text-dark/50'>
-                              Lorem ipsum dolor sit amet...
-                           </span>
-                        </div>
-                     </li>
-                  ))}
+                  newUsers.map(
+                     (u, index) =>
+                        u._id !== user._id && (
+                           <li
+                              onClick={() => activeUserHandle(u.username, u._id)}
+                              className='flex cursor-pointer p-2 items-center gap-2 bg-lightv2 rounded-sm'
+                              key={index}>
+                              <Avatar name={u.username} size={30} />
+                              <div className='flex flex-col justify-center translate-y-1'>
+                                 <span className='text-lg leading-3 font-medium'>
+                                    {u.username}
+                                 </span>
+                                 <span className='text-sm text-dark/50'>
+                                    Lorem ipsum dolor sit amet...
+                                 </span>
+                              </div>
+                           </li>
+                        )
+                  )}
             </ul>
          </div>
       </div>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { RootState } from "./store/index";
 import { useSelector, useDispatch } from "react-redux";
-import { login, logout } from "./store/user";
+import { login, logout } from "./store/auth";
 import Home from "./pages/Home";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -15,7 +15,7 @@ const socket = io(import.meta.env.VITE_SERVER_URL, {
 });
 
 function App() {
-   const { userStatus } = useSelector((state: RootState) => state.user);
+   const { userStatus } = useSelector((state: RootState) => state.auth);
    const dispatch = useDispatch();
    const navigate = useNavigate();
 

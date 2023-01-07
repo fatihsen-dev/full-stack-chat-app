@@ -1,11 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import MessageArea from "../components/MessageArea";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
 export default function Home({ socket }: { socket: any }) {
-   const { user, userStatus } = useSelector((state: RootState) => state.user);
+   const { user, userStatus } = useSelector((state: RootState) => state.auth);
+
    useEffect(() => {
       socket.on("receive_message", (message: any) => {
          console.log(message);
