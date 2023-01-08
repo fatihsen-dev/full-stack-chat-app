@@ -63,7 +63,7 @@ export default function Sidebar() {
             </button>
          </div>
          <div className='w-full h-full relative'>
-            <ul className='p-2 gap-2 flex flex-col w-full h-full bg-lightv1'>
+            <ul className='p-2 gap-2 flex overflow-auto flex-col w-full h-full bg-lightv1'>
                {firstUser && (
                   <li className='flex cursor-pointer p-2 items-center gap-2 bg-lightv2 rounded-sm'>
                      <Avatar name={firstUser.username} size={30} />

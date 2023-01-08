@@ -14,18 +14,19 @@ export default function MessageArea({
    const [message, setMessage] = useState<string>("");
    const [messages, setMessages] = useState<
       Array<{
-         username: string;
+         user: string;
          message: string;
       }>
    >([]);
 
    const submitHandle = (e: any) => {
       e.preventDefault();
-      setMessages([...messages, { username: user.username, message }]);
+      setMessages([...messages, { user: user._id, message }]);
       socket.emit("send_message", {
-         messages: [...messages, { username: user.username, message }],
+         messages: [...messages, { user: user._id, message }],
          username: user.username,
-         userid: user._id,
+         sender: user._id,
+         send: activeUser._id,
       });
    };
 
@@ -36,7 +37,7 @@ export default function MessageArea({
    }, [socket]);
 
    return (
-      <div className='flex-1 h-full bg-dark grid place-items-center'>
+      <div className='flex-1 bg-dark flex justify-center items-center'>
          {activeUser.username.length > 0 ? (
             <div className='flex flex-col w-full h-full p-3 gap-3'>
                <div className='bg-lightv1 h-14 flex items-center px-3'>
@@ -47,15 +48,19 @@ export default function MessageArea({
                      </span>
                   </div>
                </div>
-               <ul className='overflow-auto max-h-full flex flex-col gap-2 text-lg'>
+               <ul className='overflow-auto flex-1 flex flex-col gap-2 text-lg pr-2'>
                   {messages &&
                      messages.map((mes: any, index: any) =>
                         user.username !== mes.username ? (
-                           <li className='bg-lightv1 p-2 rounded-sm mr-auto' key={index}>
+                           <li
+                              className='bg-lightv1 px-2 py-1 rounded-sm mr-auto'
+                              key={index}>
                               {mes.message}
                            </li>
                         ) : (
-                           <li className='bg-green/90 p-2 rounded-sm ml-auto' key={index}>
+                           <li
+                              className='bg-green/90 px-2 py-1 rounded-sm ml-auto'
+                              key={index}>
                               {mes.message}
                            </li>
                         )
