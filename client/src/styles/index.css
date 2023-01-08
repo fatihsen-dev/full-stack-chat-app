@@ -26,3 +26,15 @@ body,
 .input-placeholder.error {
    @apply bg-red-100 border-red-300;
 }
+
+::-webkit-scrollbar {
+   width: 8px;
+}
+
+::-webkit-scrollbar-track {
+   @apply bg-gray rounded-[1px];
+}
+
+::-webkit-scrollbar-thumb {
+   @apply bg-dark/30;
+}
