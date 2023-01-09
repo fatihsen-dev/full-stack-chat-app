@@ -8,6 +8,7 @@ const app = express();
 import { createServer } from "http";
 import mongoose from "mongoose";
 import userRouter from "./routes/user.js";
+import messageRouter from "./routes/message.js";
 import { Message } from "./models/message.js";
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,10 +26,16 @@ socketio.on("connection", (socket) => {
       socket.broadcast.emit("receive_message", data);
       try {
          await Message.find(
-            { users: { $in: [data.sender, data.send] } },
+            {
+               users: {
+                  $in: [
+                     mongoose.Types.ObjectId(data.sender),
+                     mongoose.Types.ObjectId(data.send),
+                  ],
+               },
+            },
             async (err, doc) => {
                if (err) {
-                  console.log(data.sender, data.send);
                   const message = await Message.create({
                      users: [data.sender, data.send],
                      messages: [...data.messages],
@@ -55,6 +62,7 @@ server.listen(process.env.port || 5000, () => {
 });
 
 app.use("/user", userRouter);
+app.use("/message", messageRouter);
 
 (async () => {
    try {
