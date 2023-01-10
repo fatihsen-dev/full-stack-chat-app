@@ -4,7 +4,7 @@ import { searchRequest } from "../axios";
 import Avatar from "./Avatar";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
-import { setUsers, setActiveUser } from "../store/messageData";
+import { setMessages, setActiveUser } from "../store/message";
 
 export default function Sidebar() {
    const {} = useSelector((state: RootState) => state.messages);
@@ -24,6 +24,7 @@ export default function Sidebar() {
 
    const searchHandle = async (e: any) => {
       setInputVal(e.target.value);
+      console.log(e.target.value);
       if (e.target.value.length > 0 && newUser) {
          const response = await searchRequest(e.target.value);
          setNewUsers(response.data);
@@ -37,6 +38,7 @@ export default function Sidebar() {
       setFirstUser({ username, _id });
       setPopupActive(false);
       setInputVal("");
+      setNewUsers([]);
    };
 
    return (

@@ -14,8 +14,8 @@ export const index = async (req, res) => {
             return res.send(docs);
          }
       )
-         .select("-__v")
-         .populate("users", "-token -__v -password -updatedAt");
+         .select("-__v -updatedAt -createdAt")
+         .populate("users", "-token -__v -password -updatedAt -createdAt");
    } catch (error) {
       console.log(error);
       return res.status(500).send("Server error (message index)");

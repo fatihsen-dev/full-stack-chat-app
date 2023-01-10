@@ -25,7 +25,7 @@ socketio.on("connection", (socket) => {
    socket.on("send_message", async (data) => {
       socket.broadcast.emit("receive_message", data);
       try {
-         await Message.find(
+         await Message.findOne(
             {
                users: {
                   $in: [
@@ -36,15 +36,20 @@ socketio.on("connection", (socket) => {
             },
             async (err, doc) => {
                if (err) {
+                  console.log(err);
+               }
+               if (doc === null) {
                   const message = await Message.create({
                      users: [data.sender, data.send],
                      messages: [...data.messages],
                   });
                   return message.save();
                }
-               await Message.findByIdAndUpdate(doc[0]._id, {
-                  messages: [...data.messages],
-               });
+               if (doc) {
+                  return await Message.findByIdAndUpdate(doc._id, {
+                     messages: [...data.messages],
+                  });
+               }
             }
          );
       } catch (error) {
