@@ -137,7 +137,7 @@ export default function Register() {
             "token",
             JSON.stringify({ token: data.token, userid: data._id })
          );
-         dispatch(login({ status: true, user: data }));
+         dispatch(login({ userStatus: true, user: data }));
          navigate("/");
       } catch (error: any) {
          toast.error(error.response.data.message);

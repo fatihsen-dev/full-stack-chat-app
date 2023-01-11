@@ -16,8 +16,17 @@ export type MessagesType = {
 
 export type activeUserType = {
    activeUser: {
-      username: string;
-      _id: string;
+      _id?: string;
+      user: {
+         _id: string;
+         username: string;
+      };
+      messages: Array<{
+         user: string;
+         message: string;
+         _id?: string;
+         date?: string;
+      }>;
    };
 };
 

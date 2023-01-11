@@ -1,25 +1,39 @@
-import { MessageInterface } from "./Types";
+import { MessagesType, Types } from "./Types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: MessageInterface = {
+const initialState: Types = {
    messages: [],
    activeUser: {
-      username: "",
-      _id: "",
+      user: {
+         _id: "",
+         username: "",
+      },
+      messages: [],
    },
 };
 
 export const counterSlice = createSlice({
-   name: "counter",
+   name: "messages",
    initialState,
    reducers: {
-      setMessages: (state, action: PayloadAction<>) => {},
+      setMessages: (state, action: PayloadAction<MessagesType>) => {
+         state.messages = action.payload.messages;
+      },
       setActiveUser: (
          state,
          action: PayloadAction<{
-            username: string;
-            _id: string;
+            _id?: string;
+            user: {
+               _id: string;
+               username: string;
+            };
+            messages: Array<{
+               user: string;
+               message: string;
+               _id?: string;
+               date?: string;
+            }>;
          }>
       ) => {
          state.activeUser = action.payload;

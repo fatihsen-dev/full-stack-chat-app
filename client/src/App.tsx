@@ -26,10 +26,10 @@ function App() {
                const { data } = await controlRequest(
                   JSON.parse(`${localStorage.getItem("token")}`)
                );
-               dispatch(login({ status: true, user: data }));
+               dispatch(login({ userStatus: true, user: data }));
             } catch (error) {
                dispatch(
-                  login({ status: false, user: { token: "", username: "", _id: "" } })
+                  login({ userStatus: false, user: { token: "", username: "", _id: "" } })
                );
                navigate("/login");
                localStorage.removeItem("token");

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Avatar from "./Avatar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
+import { setActiveUser } from "../store/message";
 
 export default function MessageArea({
    socket,
@@ -11,25 +12,26 @@ export default function MessageArea({
    user: { _id: string; username: string; token: string };
 }) {
    const { activeUser } = useSelector((state: RootState) => state.messages);
+   const dispatch = useDispatch();
+
    const [message, setMessage] = useState<string>("");
-   const [messages, setMessages] = useState<
-      Array<{
-         user: string;
-         message: string;
-      }>
-   >([]);
 
    const listRef = useRef<any>();
 
    const submitHandle = (e: any) => {
       e.preventDefault();
       if (message.length > 0) {
-         setMessages([...messages, { user: user._id, message }]);
+         dispatch(
+            setActiveUser({
+               user: activeUser.user,
+               messages: [...activeUser.messages, { user: user._id, message }],
+            })
+         );
          socket.emit("send_message", {
-            messages: [...messages, { user: user._id, message }],
+            messages: [...activeUser.messages, { user: user._id, message }],
             username: user.username,
             sender: user._id,
-            send: activeUser._id,
+            send: activeUser.user._id,
          });
          setMessage("");
          listRef.current.focus;
@@ -44,7 +46,12 @@ export default function MessageArea({
 
    useEffect(() => {
       socket.on("receive_message", (messages: any) => {
-         setMessages([...messages.messages]);
+         dispatch(
+            setActiveUser({
+               user: { _id: activeUser.user._id, username: activeUser.user.username },
+               messages: [...activeUser.messages, { user: user._id, message }],
+            })
+         );
          setTimeout(() => {
             listRef.current.scroll({
                top: listRef.current.scrollHeight,
@@ -56,13 +63,13 @@ export default function MessageArea({
 
    return (
       <div className='flex-1 bg-dark flex justify-center items-center'>
-         {activeUser.username.length > 0 ? (
+         {activeUser.user.username.length > 0 ? (
             <div className='flex flex-col w-full h-full p-3 gap-3'>
                <div className='bg-lightv1 h-14 flex items-center px-3 justify-between'>
                   <div className='flex items-center gap-2'>
-                     <Avatar name={activeUser.username} size={30} />
+                     <Avatar name={activeUser.user.username} size={30} />
                      <span className='text-xl font-medium flex leading-5'>
-                        {activeUser.username}
+                        {activeUser.user.username}
                      </span>
                   </div>
                   <span className='text-xl font-medium flex leading-5'>
@@ -72,21 +79,30 @@ export default function MessageArea({
                <ul
                   ref={listRef}
                   className='overflow-auto flex-1 flex flex-col gap-2 text-lg pr-2'>
-                  {messages &&
-                     messages.map((mes: any, index: any) =>
-                        user._id !== mes.user ? (
-                           <li
-                              className='bg-lightv1 px-2 py-1 rounded-sm mr-auto'
-                              key={index}>
-                              {mes.message}
-                           </li>
-                        ) : (
-                           <li
-                              className='bg-green/90 px-2 py-1 rounded-sm ml-auto'
-                              key={index}>
-                              {mes.message}
-                           </li>
-                        )
+                  {activeUser.messages &&
+                     activeUser.messages.map(
+                        (
+                           mes: {
+                              user: string;
+                              message: string;
+                              _id?: string;
+                              date?: string;
+                           },
+                           index: any
+                        ) =>
+                           user._id !== mes.user ? (
+                              <li
+                                 className='bg-lightv1 px-2 py-1 rounded-sm mr-auto'
+                                 key={index}>
+                                 {mes.message}
+                              </li>
+                           ) : (
+                              <li
+                                 className='bg-green/90 px-2 py-1 rounded-sm ml-auto'
+                                 key={index}>
+                                 {mes.message}
+                              </li>
+                           )
                      )}
                </ul>
                <div className='bg-lightv1 h-14 flex items-center p-3 mt-auto'>
