@@ -25,31 +25,27 @@ socketio.on("connection", (socket) => {
    socket.on("send_message", async (data) => {
       socket.broadcast.emit("receive_message", data);
       try {
-         await Message.findOne(
+         Message.findOne(
             {
-               users: {
-                  $in: [
-                     mongoose.Types.ObjectId(data.sender),
-                     mongoose.Types.ObjectId(data.send),
-                  ],
-               },
+               $and: [
+                  { users: { $in: [mongoose.Types.ObjectId(data.sender)] } },
+                  { users: { $in: [mongoose.Types.ObjectId(data.send)] } },
+               ],
             },
-            async (err, doc) => {
+            async (err, results) => {
                if (err) {
                   console.log(err);
                }
-               if (doc === null) {
-                  const message = await Message.create({
-                     users: [data.sender, data.send],
-                     messages: [...data.messages],
-                  });
-                  return message.save();
-               }
-               if (doc) {
-                  return await Message.findByIdAndUpdate(doc._id, {
+               if (results) {
+                  return await Message.findByIdAndUpdate(results._id, {
                      messages: [...data.messages],
                   });
                }
+               const message = await Message.create({
+                  users: [data.sender, data.send],
+                  messages: [...data.messages],
+               });
+               return message.save();
             }
          );
       } catch (error) {
