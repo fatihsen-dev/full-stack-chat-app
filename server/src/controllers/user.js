@@ -20,7 +20,7 @@ export const search = async (req, res) => {
          return res.status(500).send({ message: "Server error (search)" });
       }
       return res.send(users);
-   }).select("-token -password -__v");
+   }).select("-token -password -__v -updatedAt -createdAt");
 };
 
 export const login = async (req, res) => {
@@ -49,7 +49,9 @@ export const login = async (req, res) => {
             ).select("-__v -password");
 
             return res.send(
-               await User.findById(updatedUser._id).select("-__v -password")
+               await User.findById(updatedUser._id).select(
+                  "-__v -password -createdAt -updatedAt"
+               )
             );
          } else {
             return res.status(404).send({ message: "Wrong password" });
@@ -86,7 +88,9 @@ export const register = async (req, res) => {
                date: Date.now(),
             }),
          }).select("-__v -password");
-         return res.send(await User.findById(user._id).select("-__v -password"));
+         return res.send(
+            await User.findById(user._id).select("-__v -password -createdAt -updatedAt")
+         );
       } else {
          return res.status(409).send({ message: "User already exists" });
       }
@@ -99,7 +103,9 @@ export const Control = async (req, res) => {
    const { userid, token } = req.body;
 
    try {
-      const user = await User.findById(userid).select("-__v -password");
+      const user = await User.findById(userid).select(
+         "-__v -password -createdAt -updatedAt"
+      );
 
       if (user.token === token) {
          return res.send(user);
