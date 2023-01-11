@@ -14,3 +14,6 @@ export const controlRequest = async (data: { username: string; token: string }) 
 
 export const searchRequest = async (username: string) =>
    await HTTP.get(`/user/search/${username}`);
+
+export const allMessagesRequest = async (userid: string) =>
+   await HTTP.get(`/message/${userid}`);

@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import MessageArea from "../components/MessageArea";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
+import { allMessagesRequest } from "../axios";
+import { setMessages } from "../store/message";
 
 export default function Home({ socket }: { socket: any }) {
    const { user } = useSelector((state: RootState) => state.auth);
+   const { messages } = useSelector((state: RootState) => state.messages);
+   const dispatch = useDispatch();
 
    useEffect(() => {
-      
+      (async () => {
+         const { data } = await allMessagesRequest(user._id);
+         dispatch(setMessages({ messages: data }));
+      })();
    }, []);
 
    return (
