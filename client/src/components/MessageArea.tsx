@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -7,18 +7,19 @@ import { setActiveUser } from "../store/message";
 export default function MessageArea({
    socket,
    user,
+   listRef,
 }: {
    socket: any;
    user: { _id: string; username: string; token: string };
+   listRef: any;
 }) {
    const { activeUser } = useSelector((state: RootState) => state.messages);
    const dispatch = useDispatch();
 
    const [message, setMessage] = useState<string>("");
+   const [allMessage, setAllMessage] = useState<string>();
 
-   const listRef = useRef<any>();
-
-   const submitHandle = (e: any) => {
+   const submitHandle = async (e: any) => {
       e.preventDefault();
       if (message.length > 0) {
          dispatch(
@@ -34,30 +35,43 @@ export default function MessageArea({
             send: activeUser.user._id,
          });
          setMessage("");
-         listRef.current.focus;
          setTimeout(() => {
             listRef.current.scroll({
                top: listRef.current.scrollHeight,
                behavior: "smooth",
             });
-         }, 50);
+            listRef.current.focus;
+         }, 0);
       }
    };
 
+   type MsgType = {
+      messages: Array<{
+         user: string;
+         message: string;
+         _id?: string | undefined;
+         date?: string | undefined;
+      }>;
+      send: string;
+      sender: string;
+      username: string;
+   };
+
    useEffect(() => {
-      socket.on("receive_message", (messages: any) => {
+      socket.on("receive_message", async (messages: MsgType) => {
          dispatch(
             setActiveUser({
                user: { _id: activeUser.user._id, username: activeUser.user.username },
-               messages: [...activeUser.messages, { user: user._id, message }],
+               messages: [...messages.messages],
             })
          );
-         setTimeout(() => {
-            listRef.current.scroll({
-               top: listRef.current.scrollHeight,
-               behavior: "smooth",
-            });
-         }, 50);
+
+         // setTimeout(() => {
+         //    listRef.current.scroll({
+         //       top: listRef.current.scrollHeight,
+         //       behavior: "smooth",
+         //    });
+         // }, 0);
       });
    }, [socket]);
 
@@ -76,11 +90,11 @@ export default function MessageArea({
                      {user.username}
                   </span>
                </div>
-               <ul
-                  ref={listRef}
-                  className='overflow-auto flex-1 flex flex-col gap-2 text-lg pr-2'>
-                  {activeUser.messages &&
-                     activeUser.messages.map(
+               {activeUser.messages.length > 0 && (
+                  <ul
+                     ref={listRef}
+                     className='overflow-auto flex-1 flex flex-col gap-2 text-lg pr-2'>
+                     {activeUser.messages.map(
                         (
                            mes: {
                               user: string;
@@ -104,7 +118,8 @@ export default function MessageArea({
                               </li>
                            )
                      )}
-               </ul>
+                  </ul>
+               )}
                <div className='bg-lightv1 h-14 flex items-center p-3 mt-auto'>
                   <form onSubmit={submitHandle} className='flex w-full gap-3'>
                      <input

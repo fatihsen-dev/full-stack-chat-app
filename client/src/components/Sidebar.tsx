@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import { setActiveUser } from "../store/message";
 
-export default function Sidebar() {
+export default function Sidebar({ listRef }: { listRef: any }) {
    const { user } = useSelector((state: RootState) => state.auth);
    const { activeUser, messages } = useSelector((state: RootState) => state.messages);
    const dispatch = useDispatch();
@@ -34,6 +34,12 @@ export default function Sidebar() {
       inputRef.current.value = "";
       setSearchingUser([]);
       setSearchActive(false);
+      setTimeout(() => {
+         listRef.current.scroll({
+            top: listRef.current.scrollHeight,
+            behavior: "auto",
+         });
+      }, 0);
    };
 
    return (

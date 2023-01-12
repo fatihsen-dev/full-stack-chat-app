@@ -23,7 +23,6 @@ const socketio = new Server(server);
 
 socketio.on("connection", (socket) => {
    socket.on("send_message", async (data) => {
-      socket.broadcast.emit("receive_message", data);
       try {
          Message.findOne(
             {
@@ -37,15 +36,15 @@ socketio.on("connection", (socket) => {
                   console.log(err);
                }
                if (results) {
-                  return await Message.findByIdAndUpdate(results._id, {
+                  await Message.findByIdAndUpdate(results._id, {
                      messages: [...data.messages],
                   });
+                  return socket.broadcast.emit("receive_message", data);
                }
-               const message = await Message.create({
+               await Message.create({
                   users: [data.sender, data.send],
                   messages: [...data.messages],
                });
-               return message.save();
             }
          );
       } catch (error) {

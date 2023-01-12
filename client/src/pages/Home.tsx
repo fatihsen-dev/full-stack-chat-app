@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import MessageArea from "../components/MessageArea";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { setMessages } from "../store/message";
 
 export default function Home({ socket }: { socket: any }) {
    const { user } = useSelector((state: RootState) => state.auth);
-   const { messages } = useSelector((state: RootState) => state.messages);
+   const listRef = useRef<any>();
    const dispatch = useDispatch();
 
    useEffect(() => {
@@ -20,8 +20,8 @@ export default function Home({ socket }: { socket: any }) {
 
    return (
       <div className='flex w-full h-full 2xl:container xl:container 2xl:my-5 xl:my-5'>
-         <Sidebar />
-         <MessageArea socket={socket} user={user} />
+         <Sidebar listRef={listRef} />
+         <MessageArea listRef={listRef} socket={socket} user={user} />
       </div>
    );
 }
