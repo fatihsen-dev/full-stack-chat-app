@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { searchRequest } from "../axios";
 import Avatar from "./Avatar";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,7 +7,7 @@ import { setActiveUser } from "../store/message";
 
 export default function Sidebar({ listRef }: { listRef: any }) {
    const { user } = useSelector((state: RootState) => state.auth);
-   const { activeUser, messages } = useSelector((state: RootState) => state.messages);
+   const { messages } = useSelector((state: RootState) => state.messages);
    const dispatch = useDispatch();
 
    const inputRef = useRef<any>();
@@ -34,12 +34,13 @@ export default function Sidebar({ listRef }: { listRef: any }) {
       inputRef.current.value = "";
       setSearchingUser([]);
       setSearchActive(false);
-      setTimeout(() => {
-         listRef.current.scroll({
-            top: listRef.current.scrollHeight,
-            behavior: "auto",
-         });
-      }, 0);
+      if (listRef.current)
+         setTimeout(() => {
+            listRef.current.scroll({
+               top: listRef.current.scrollHeight,
+               behavior: "auto",
+            });
+         }, 0);
    };
 
    return (

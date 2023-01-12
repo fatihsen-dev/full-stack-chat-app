@@ -27,8 +27,8 @@ socketio.on("connection", (socket) => {
          Message.findOne(
             {
                $and: [
-                  { users: { $in: [mongoose.Types.ObjectId(data.sender)] } },
-                  { users: { $in: [mongoose.Types.ObjectId(data.send)] } },
+                  { users: { $in: [mongoose.Types.ObjectId(data.senderid)] } },
+                  { users: { $in: [mongoose.Types.ObjectId(data.sendid)] } },
                ],
             },
             async (err, results) => {
@@ -42,7 +42,7 @@ socketio.on("connection", (socket) => {
                   return socket.broadcast.emit("receive_message", data);
                }
                await Message.create({
-                  users: [data.sender, data.send],
+                  users: [data.senderid, data.sendid],
                   messages: [...data.messages],
                });
             }

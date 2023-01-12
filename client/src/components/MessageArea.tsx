@@ -17,7 +17,6 @@ export default function MessageArea({
    const dispatch = useDispatch();
 
    const [message, setMessage] = useState<string>("");
-   const [allMessage, setAllMessage] = useState<string>();
 
    const submitHandle = async (e: any) => {
       e.preventDefault();
@@ -30,9 +29,9 @@ export default function MessageArea({
          );
          socket.emit("send_message", {
             messages: [...activeUser.messages, { user: user._id, message }],
-            username: user.username,
-            sender: user._id,
-            send: activeUser.user._id,
+            senderid: user._id,
+            sendid: activeUser.user._id,
+            username: activeUser.user.username,
          });
          setMessage("");
          setTimeout(() => {
@@ -52,8 +51,8 @@ export default function MessageArea({
          _id?: string | undefined;
          date?: string | undefined;
       }>;
-      send: string;
-      sender: string;
+      sendid: string;
+      senderid: string;
       username: string;
    };
 
@@ -61,17 +60,17 @@ export default function MessageArea({
       socket.on("receive_message", async (messages: MsgType) => {
          dispatch(
             setActiveUser({
-               user: { _id: activeUser.user._id, username: activeUser.user.username },
+               user: { _id: messages.sendid, username: messages.username },
                messages: [...messages.messages],
             })
          );
 
-         // setTimeout(() => {
-         //    listRef.current.scroll({
-         //       top: listRef.current.scrollHeight,
-         //       behavior: "smooth",
-         //    });
-         // }, 0);
+         setTimeout(() => {
+            listRef.current.scroll({
+               top: listRef.current.scrollHeight,
+               behavior: "smooth",
+            });
+         }, 0);
       });
    }, [socket]);
 
