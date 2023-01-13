@@ -10,6 +10,7 @@ export default function Sidebar({ listRef }: { listRef: any }) {
    const { messages } = useSelector((state: RootState) => state.messages);
    const dispatch = useDispatch();
 
+   
    const inputRef = useRef<any>();
 
    const [searchActive, setSearchActive] = useState<boolean>(false);
