@@ -57,8 +57,8 @@ socketio.on("connection", (socket) => {
    });
 });
 
-server.listen(process.env.port || 5000, () => {
-   console.log(`Server listen ${process.env.port || 5000}`);
+server.listen(process.env.PORT || 5000, () => {
+   console.log(`Server listen ${process.env.PORT || 5000}`);
 });
 
 app.use("/user", userRouter);
