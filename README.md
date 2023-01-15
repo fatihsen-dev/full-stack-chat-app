@@ -1,2 +1,2 @@
 # full-stack-chat-app
-React.js, Express.js, Socket.io
+ React.js, Express.js, Socket.io
