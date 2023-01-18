@@ -27,11 +27,12 @@ export default function MessageArea({
                messages: [...activeUser.messages, { user: user._id, message }],
             })
          );
+         console.log(activeUser.user.username);
          socket.emit("send_message", {
             messages: [...activeUser.messages, { user: user._id, message }],
             senderid: user._id,
             sendid: activeUser.user._id,
-            username: activeUser.user.username,
+            username: user.username,
          });
          setMessage("");
          setTimeout(() => {
@@ -85,9 +86,6 @@ export default function MessageArea({
                         {activeUser.user.username}
                      </span>
                   </div>
-                  <span className='text-xl font-medium flex leading-5'>
-                     {user.username}
-                  </span>
                </div>
                {activeUser.messages.length > 0 && (
                   <ul
